@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>
+		Accelerometer Toys
+	</title>
+</head>
+<body>
+	<div id="info">
+		<div id="xRef"></div>
+		<div id="yRef"></div>
+		<div id="zRef"></div>
+	</div>
+	<script src="shakeit.js"></script>
+	<script>
+		var accel = new ShakeIt();
+		var xRef = document.getElementById('xRef');
+		var yRef = document.getElementById('yRef');
+		var zRef = document.getElementById('zRef');
+		accel.on('xchange', function(x){ xRef.innerHTML = x; });
+		accel.on('ychange', function(y){ yRef.innerHTML = y; });
+		accel.on('zchange', function(z){ zRef.innerHTML = z; });
+	</script>
+</body>
+</html>
