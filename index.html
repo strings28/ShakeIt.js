@@ -9,9 +9,9 @@
 </head>
 <body>
 	<div id="info">
-		<div id="xRef"></div>
-		<div id="yRef"></div>
-		<div id="zRef"></div>
+		<div id="xRef">0</div>
+		<div id="yRef">0</div>
+		<div id="zRef">0</div>
 	</div>
 	<script src="shakeit.js"></script>
 	<script>
@@ -19,9 +19,9 @@
 		var xRef = document.getElementById('xRef');
 		var yRef = document.getElementById('yRef');
 		var zRef = document.getElementById('zRef');
-		accel.on('xchange', function(x){ xRef.innerHTML = x; });
-		accel.on('ychange', function(y){ yRef.innerHTML = y; });
-		accel.on('zchange', function(z){ zRef.innerHTML = z; });
+			accel.on('xchange', function(x){ xRef.innerHTML = x; });
+			accel.on('ychange', function(y){ yRef.innerHTML = y; });
+			accel.on('zchange', function(z){ zRef.innerHTML = z; });
 	</script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /* shakeit.js */
 
-function Shakeit(config)
+function ShakeIt(config)
 {
 
 	this.config = config || {};
@@ -22,10 +22,8 @@ function Shakeit(config)
 	
 	this.listenForMotion = function(){
 		var shakeit = this;	
-		window.ondevicemotion = function(event) {
-			shakeit.x = event.acceleration.x;
-			shakeit.y = event.acceleration.y;
-			shakeit.z = event.acceleration.z;
+		window.ondevicemotion = function(evt) {
+			shakeit.triggerEvent(evt);
 		}
 	};
 	
@@ -36,29 +34,32 @@ function Shakeit(config)
 			shakeit.xG = event.accelerationIncludingGravity.x;
 			shakeit.yG = event.accelerationIncludingGravity.y;
 			shakeit.zG = event.accelerationIncludingGravity.z;
+			this.triggerEvent(event);
 		}
 	};
 	
 	// define events that are supported
-	this.supportedEvents = ['xchange', 'ychange', 'zchange', 'shakeup', 'shakedown', 'shakeright', 'shakeleft'];
+	this.supportedEvents = [
+		'xchange' , 
+		'ychange' , 
+		'zchange' , 
+		'shakeup' , 
+		'shakedown' , 
+		'shakeright' , 
+		'shakeleft'
+	];
 	
 	this.isSupportedEvent = function(evt){
-		var i = this.supportedEvents.length;
-		while(i--)
-		{
-			if(this.supportedEvents[i] == evt)
-				return true;
-		}
-		return false;
+		return this.supportedEvents[evt] != -1;
 	}
 	
 	this.evtListeners = [];
-	this.on = function(evtName, filter, functionHandle){
+	this.on = function(evtName, functionHandle){
 		if(!this.isSupportedEvent(evtName))
 		{
 			return false;
 		}
-		this.evtListeners.push({'evt':evtName, 'filter': filter, 'functionHandle':functionHandle});
+		this.evtListeners.push({'evt':evtName, 'functionHandle':functionHandle});
 	};
 	
 	this.off = function(evtName, filter, functionHandle){
@@ -69,6 +70,40 @@ function Shakeit(config)
 	this.triggerPulse = function(){
 		
 	};
+	
+	this.triggerEvent = function(evt)
+	{
+		if(this.x !== event.acceleration.x)
+		{
+			this.x = event.acceleration.x;
+			this.triggerXEvents(this.x, evt);
+		}
+		if(this.y !== event.acceleration.y)
+		{
+			this.y = event.acceleration.y;
+			this.triggerYEvents(this.y, evt);
+		}
+		if(this.z !== event.acceleration.z){
+			this.z = event.acceleration.z;
+			this.triggerZEvents(this.z, evt);
+		}
+	}
+	var shakeit = this;
+	function triggerEvents(evtType){
+	
+		return function(evtVal, evt){
+			for(var i = 0, iMax = shakeit.evtListeners.length;i<iMax;i++)
+			{
+				if(shakeit.evtListeners[i].evt == evtType){
+					shakeit.evtListeners[i].functionHandle(evtVal, evt);
+				}
+			}
+		}
+	}
+	
+	this.triggerXEvents = triggerEvents('xchange');
+	this.triggerYEvents = triggerEvents('ychange');
+	this.triggerZEvents = triggerEvents('zchange');
 	
 	this.listening = true;
 	this.intervalHandle = null;
@@ -108,4 +143,6 @@ function Shakeit(config)
 	this.setInterval = function(interval){
 		this.interval = interval;
 	}
+	
+	this.listenForMotion();
 }
